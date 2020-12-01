@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition template="/template.xhtml">
+<ui:define name="conteudo">
+
+	<h1 align="center">Cadastro de Usuário</h1>
+
+	<h:form>
+		<h:messages 
+			errorStyle="color:red"
+			infoStyle="color:green"
+			warnStyle="color:orange"
+			globalOnly="true" 
+			showDetail="false"/>
+			
+		<div class="corpo" align="center">
+		<h:panelGrid columns="2">
+			
+			<h:outputLabel value="Nome:" />
+			<h:panelGroup>
+				<h:inputText id="itNome" value="#{usuarioController.entity.nome}"
+						required="true"
+						requiredMessage="O nome deve ser informado." 
+						validatorMessage="Informe um valor entre 2 e 60" >
+					<f:validateLength minimum="2" maximum="60" />
+				</h:inputText>
+				<h:message for="itNome" style="color:red"/>
+			</h:panelGroup>
+			
+			<h:outputLabel value="Cpf:" />
+			<h:panelGroup>
+				<h:inputText id="itCpf" value="#{usuarioController.entity.cpf}"
+						validatorMessage="Cpf inválido. Ex. 999.999.999-99" >
+						111.111.111-11
+					<f:validateRegex 
+						pattern="(^[0-9]{3}\.{1}[0-9]{3}\.{1}[0-9]{3}\-{1}[0-9]{2})|([0-9]{11})"/>
+				</h:inputText>
+				<h:message for="itCpf" style="color:red"/>
+			</h:panelGroup>			
+			
+			<h:outputLabel value="Data Nascimento:" />
+			<h:panelGroup>
+				<h:inputText id="itData" value="#{usuarioController.entity.dataNascimento}" 
+					converterMessage="Erro ao converter a data">
+					<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+				</h:inputText>
+				<h:message for="itData" style="color:red"/>
+			</h:panelGroup>
+			<h:outputLabel value="Sexo:" />
+			<h:selectOneMenu value="#{usuarioController.entity.sexo}">
+				<f:selectItem itemLabel="Selecione ..." />
+				<f:selectItems value="#{usuarioController.listaSexo}" 
+							   var="obj"
+							   itemLabel="#{obj.label}"/>
+			</h:selectOneMenu>
+				
+			<h:outputLabel value="Perfil:" />
+			<h:selectOneRadio value="#{usuarioController.entity.perfil}">
+				<f:selectItems value="#{usuarioController.listaPerfil}" 
+							   var="obj"
+							   itemLabel="#{obj.label}"/>
+			</h:selectOneRadio>			
+									
+			<h:outputLabel value="E-mail:" />
+			<h:panelGroup>
+				<h:inputText id="itEmail" 
+							 value="#{usuarioController.entity.email}" 
+							 validatorMessage="Email inválido.">
+					<f:validateRegex 
+						pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"/>
+				</h:inputText>	
+				<h:message for="itEmail" style="color:red"/>					
+			 </h:panelGroup>
+
+			<h:outputLabel value="Senha:" />
+			<h:panelGroup>
+				<h:inputSecret id="isSenha" value="#{usuarioController.entity.senha}" />	
+				<h:message for="isSenha" style="color:red"/>					
+			 </h:panelGroup>			
+
+		</h:panelGrid>
+		</div>
+
+		<h:commandButton value="Incluir"
+			actionListener="#{usuarioController.incluir()}" 
+			disabled="#{usuarioController.entity.id != null}">
+			<f:ajax execute="@form" render="@form formDataTable"/>
+		</h:commandButton>	
+			
+		<h:commandButton value="Alterar"
+			actionListener="#{usuarioController.alterar()}" 
+			disabled="#{usuarioController.entity.id == null}">
+			<f:ajax execute="@form" render="@form formDataTable"/>
+		</h:commandButton>	
+		
+		<h:commandButton value="Excluir"
+			actionListener="#{usuarioController.excluir()}" 
+			disabled="#{usuarioController.entity.id == null}">
+			<f:ajax execute="@this" render="@form formDataTable"/>
+		</h:commandButton>
+	
+		<h:commandButton value="Limpar"
+			actionListener="#{usuarioController.limpar}" >
+			<f:ajax execute="@this" render="@form"/>
+		</h:commandButton>
+	</h:form>	
+	<h:form id="formDataTable">		
+		<h:dataTable style="" value="#{usuarioController.listaEntity}" var="obj">
+			<h:column>
+				<f:facet name="header">Id</f:facet>		
+				<h:outputLabel value="#{obj.id}"/>	
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Nome</f:facet>	
+				<h:commandLink value="#{obj.nome}" 
+						actionListener="#{usuarioController.editar(obj)}"/>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Data Nascimento</f:facet>		
+				<h:outputLabel value="#{obj.dataNascimento}">
+					<f:convertDateTime type="localDate" pattern="dd-MM-yyyy" />
+				</h:outputLabel>	
+			</h:column>	
+			
+			<h:column>
+				<f:facet name="header">Sexo</f:facet>		
+				<h:outputLabel value="#{obj.sexo.label}"/>	
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Perfil</f:facet>		
+				<h:outputLabel value="#{obj.perfil.label}"/>	
+			</h:column>			
+			
+			<h:column>
+				<f:facet name="header">E-mail</f:facet>		
+				<h:outputLabel value="#{obj.email}"/>	
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Senha</f:facet>		
+				<h:outputLabel value="#{obj.senha}"/>	
+			</h:column>		
+			
+			<h:column>
+				<f:facet name="header">Ação</f:facet>		
+				<h:commandLink value="Apagar" actionListener="#{usuarioController.excluir(obj)}"/>	
+			</h:column>								
+		
+		</h:dataTable>
+	</h:form>	
+</ui:define>
+</ui:composition>
+</html>
