@@ -331,7 +331,7 @@ public class ProdutoDAO implements DAO<Produto> {
 		return produto;
 	}
 	//Terminar depois
-	public List<Produto> obterListaProduto(Integer tipo, String filtor) throws Exception {
+	public List<Produto> obterListaProduto(Integer tipo, String filtro) throws Exception {
 		Exception exception = null;
 		Connection conn = DAO.getConnection();
 		List<Produto> listaproduto = new ArrayList<Produto>();
@@ -346,12 +346,88 @@ public class ProdutoDAO implements DAO<Produto> {
 		sql.append("  p.tipo_produto ");
 		sql.append("FROM  ");
 		sql.append("  produto p ");
+		sql.append("  WHERE ");
+		sql.append("  upper(p.nome) LIKE upper( ? ) ");
+		sql.append("  AND upper(p.descricao) LIKE upper( ? ) ");
 		sql.append("ORDER BY p.nome ");
 
 		PreparedStatement stat = null;
 		try {
 
 			stat = conn.prepareStatement(sql.toString());
+			stat.setString(1, tipo == 1 ? "%" + filtro + "%" : "%");
+			stat.setString(2, tipo == 2 ? "%" + filtro + "%" : "%");
+
+			ResultSet rs = stat.executeQuery();
+
+			while (rs.next()) {
+				Produto produto = new Produto();
+				produto.setId(rs.getInt("id"));
+				produto.setNome(rs.getString("nome"));
+				produto.setDescricao(rs.getString("descricao"));
+				produto.setPreco(rs.getDouble("preco"));
+				produto.setEstoque(rs.getInt("estoque"));
+				produto.setTipoProduto(TipoProduto.valueOf(rs.getInt("tipo_produto")));
+				
+
+				listaproduto.add(produto);
+			}
+
+		} catch (SQLException e) {
+			Util.addErrorMessage("Não foi possivel buscar os dados do produto.");
+			e.printStackTrace();
+			exception = new Exception("Erro ao executar um sql em produtoDAO.");
+		} finally {
+			try {
+				if (!stat.isClosed())
+					stat.close();
+			} catch (SQLException e) {
+				System.out.println("Erro ao fechar o Statement");
+				e.printStackTrace();
+			}
+
+			try {
+				if (!conn.isClosed())
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println("Erro a o fechar a conexao com o banco.");
+				e.printStackTrace();
+			}
+		}
+
+		if (exception != null)
+			throw exception;
+
+		return listaproduto;
+	}
+	
+	public List<Produto> obterListaProdutoComEstoque(Integer tipo, String filtro) throws Exception {
+		Exception exception = null;
+		Connection conn = DAO.getConnection();
+		List<Produto> listaproduto = new ArrayList<Produto>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append("  p.id, ");
+		sql.append("  p.nome, ");
+		sql.append("  p.descricao, ");
+		sql.append("  p.preco, ");
+		sql.append("  p.estoque, ");
+		sql.append("  p.tipo_produto ");
+		sql.append("FROM  ");
+		sql.append("  produto p ");
+		sql.append("  WHERE ");
+		sql.append("  upper(p.nome) LIKE upper( ? ) ");
+		sql.append("  AND upper(p.descricao) LIKE upper( ? ) ");
+		sql.append("  AND p.estoque > 0 ");
+		sql.append("ORDER BY p.nome ");
+
+		PreparedStatement stat = null;
+		try {
+
+			stat = conn.prepareStatement(sql.toString());
+			stat.setString(1, tipo == 1 ? "%" + filtro + "%" : "%");
+			stat.setString(2, tipo == 2 ? "%" + filtro + "%" : "%");
 
 			ResultSet rs = stat.executeQuery();
 

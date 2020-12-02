@@ -4,40 +4,40 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import br.unitins.emidia.application.Util;
-import br.unitins.emidia.dao.MidiaDAO;
-import br.unitins.emidia.model.Midia;
+import br.unitins.emidia.dao.ProdutoDAO;
+import br.unitins.emidia.model.Produto;
 
 @Named
 @ViewScoped
 public class VendaController implements Serializable {
-	private static final long serialVersionUID = -1050498066665380767L;
+	private static final long serialVersionUID = -4327618118247623622L;
 	
 	private Integer tipoFiltro;
 	private String filtro;
-	private List<Midia> listaMidia;
+	private List<Produto> listaProduto;
 	
 	public void novaMidia() {
 		Util.redirect("midia.xhtml");
 	}
 	
 	public void pesquisar() {
-		MidiaDAO dao = new MidiaDAO();
+		ProdutoDAO dao = new ProdutoDAO();
 		try {
-			setListaMidia(dao.obterListaMidiaComEstoque(tipoFiltro, filtro));
+			setListaProduto(dao.obterListaProdutoComEstoque(tipoFiltro, filtro));
 		} catch (Exception e) {
 			e.printStackTrace();
-			setListaMidia(null);
+			setListaProduto(null);
 		}
 	}
 	
-	public void addCarrinho(Midia midia) {
+	// terminar
+	public void addCarrinho(Produto produto) {
 
+		
 	}
 
 	public Integer getTipoFiltro() {
@@ -56,14 +56,14 @@ public class VendaController implements Serializable {
 		this.filtro = filtro;
 	}
 
-	public List<Midia> getListaMidia() {
-		if (listaMidia == null)
-			listaMidia = new ArrayList<Midia>();
-		return listaMidia;
+	public List<Produto> getListaProduto() {
+		if (listaProduto == null)
+			listaProduto = new ArrayList<Produto>();
+		return listaProduto;
 	}
 
-	public void setListaMidia(List<Midia> listaMidia) {
-		this.listaMidia = listaMidia;
+	public void setListaProduto(List<Produto> listaProduto) {
+		this.listaProduto = listaProduto;
 	}
 
 }

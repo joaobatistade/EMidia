@@ -30,7 +30,7 @@ public class ConsultaProdutoController implements Serializable {
 	public void pesquisar() {
 		ProdutoDAO dao = new ProdutoDAO();
 		try {
-			setListaProduto(dao.obterTodos());
+			setListaProduto(dao.obterListaProduto(tipoFiltro, filtro));
 		} catch (Exception e) {
 			e.printStackTrace();
 			setListaProduto(null);
