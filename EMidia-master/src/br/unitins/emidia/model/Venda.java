@@ -33,4 +33,12 @@ public class Venda {
 		this.usuario = usuario;
 	}
 
+	public List<ItemVenda> getListaItemVenda() {
+		return listaItemVenda;
+	}
+
+	public void setListaItemVenda(List<ItemVenda> listaItemVenda) {
+		this.listaItemVenda = listaItemVenda;
+	}
+
 }
