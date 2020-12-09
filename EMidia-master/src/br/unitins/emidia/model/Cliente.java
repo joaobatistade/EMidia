@@ -22,7 +22,7 @@ public class Cliente implements Cloneable{
 	private String senha;
 	
 	private Sexo sexo;
-	private Perfil perfil;
+	private Perfil perfil = Perfil.USUARIO;
 	private Telefone telefone;
 	
 	public Integer getId() {

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition template="/template.xhtml">
+	<ui:define name="conteudo">
+
+		<!-- mensagem 
+			<h:messages errorStyle="color:red" warnStyle="color:orange"
+				infoStyle="color:green" globalOnly="false" />
+		-->
+	
+	<h:form id="formDataTable">		
+		<h:dataTable style="" value="#{clienteController.listaEntity}" var="obj">
+			<h:column>
+				<f:facet name="header">Id</f:facet>		
+				<h:outputLabel value="#{obj.id}"/>	
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Nome</f:facet>	
+				<h:commandLink value="#{obj.nome}" 
+						actionListener="#{clienteController.editar(obj)}"/>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Data Nascimento</f:facet>		
+				<h:outputLabel value="#{obj.dataNascimento}">
+					<f:convertDateTime type="localDate" pattern="dd-MM-yyyy" />
+				</h:outputLabel>	
+			</h:column>	
+			
+			<h:column>
+				<f:facet name="header">Sexo</f:facet>		
+				<h:outputLabel value="#{obj.sexo.label}"/>	
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Perfil</f:facet>		
+				<h:outputLabel value="#{obj.perfil.label}"/>	
+			</h:column>			
+			
+			<h:column>
+				<f:facet name="header">E-mail</f:facet>		
+				<h:outputLabel value="#{obj.email}"/>	
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Senha</f:facet>		
+				<h:outputLabel value="#{obj.senha}"/>	
+			</h:column>		
+			
+			<h:column>
+				<f:facet name="header">Ação</f:facet>		
+				<h:commandLink value="Apagar" actionListener="#{clienteController.excluir(obj)}"/>	
+			</h:column>								
+		
+		</h:dataTable>
+	</h:form>	
+</ui:define>
+</ui:composition>
+</html>

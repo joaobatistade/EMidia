@@ -25,7 +25,7 @@ public class ClienteDAO implements DAO<Cliente> {
 		StringBuffer sql = new StringBuffer();
 		sql.append("INSERT INTO ");
 		sql.append("cliente ");
-		sql.append("  (nome, cpf, email, senha, sexo, perfil, data_nascimento) ");
+		sql.append("  (nome, cpf, data_nascimento, email, senha, sexo, perfil) ");
 		sql.append("VALUES ");
 		sql.append("  ( ?, ?, ?, ?, ?, ?, ?) ");
 		PreparedStatement stat = null;
@@ -34,16 +34,16 @@ public class ClienteDAO implements DAO<Cliente> {
 			stat = conn.prepareStatement(sql.toString());
 			stat.setString(1, obj.getNome());
 			stat.setString(2, obj.getCpf());
-			stat.setString(3, obj.getEmail());
-			stat.setString(4, obj.getSenha());
-			// ternario java
-			stat.setObject(5, (obj.getSexo() == null ? null : obj.getSexo().getId()));
-			stat.setObject(6, (obj.getPerfil() == null ? null : obj.getPerfil().getId()));
 			// convertendo um obj LocalDate para sql.Date
 			if (obj.getDataNascimento() != null)
-				stat.setDate(7, Date.valueOf(obj.getDataNascimento()));
+				stat.setDate(3, Date.valueOf(obj.getDataNascimento()));
 			else
-				stat.setDate(7, null);
+				stat.setDate(3, null);
+			stat.setString(4, obj.getEmail());
+			stat.setString(5, obj.getSenha());
+			// ternario java
+			stat.setObject(6, (obj.getSexo() == null ? null : obj.getSexo().getId()));
+			stat.setObject(7, obj.getPerfil().getId());
 
 			stat.execute();
 			// efetivando a transacao
@@ -289,18 +289,18 @@ public class ClienteDAO implements DAO<Cliente> {
 		Cliente cliente = null;
 
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT ");
-		sql.append("  u.id, ");
-		sql.append("  u.data_nascimento, ");
-		sql.append("  u.sexo, ");
-		sql.append("  u.perfil, ");
-		sql.append("  u.nome, ");
-		sql.append("  u.cpf, ");
-		sql.append("  u.email, ");
-		sql.append("  u.senha ");
-		sql.append("FROM  ");
+		sql.append(" SELECT ");
+		sql.append("	c.nome, ");
+		sql.append("	c.cpf, ");
+		sql.append("	c.data_nascimento, ");
+		sql.append("	c.email, ");
+		sql.append("	c.senha, ");
+		sql.append("	c.sexo, ");
+		sql.append("	c.perfil ");
+		sql.append(" FROM  ");
 		sql.append("  cliente u ");
 		sql.append("WHERE u.id = ? ");
+		
 
 		PreparedStatement stat = null;
 		try {
@@ -313,14 +313,15 @@ public class ClienteDAO implements DAO<Cliente> {
 			if (rs.next()) {
 				cliente = new Cliente();
 				cliente.setId(rs.getInt("id"));
-				Date data = rs.getDate("data_nascimento");
-				cliente.setDataNascimento(data == null ? null : data.toLocalDate());
-				cliente.setSexo(Sexo.valueOf(rs.getInt("sexo")));
-				cliente.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
 				cliente.setNome(rs.getString("nome"));
 				cliente.setCpf(rs.getString("cpf"));
+				Date data = rs.getDate("data_nascimento");
+				cliente.setDataNascimento(data == null ? null : data.toLocalDate());
 				cliente.setEmail(rs.getString("email"));
 				cliente.setSenha(rs.getString("senha"));
+				cliente.setSexo(Sexo.valueOf(rs.getInt("sexo")));
+				cliente.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
+				
 			}
 
 		} catch (SQLException e) {

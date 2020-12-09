@@ -28,7 +28,7 @@
 						<div class="col-md-12">
 							<h:outputLabel style="margin-bottom:0;" value="Usuário:"  styleClass="wdi-red"/>
 							<h:inputText styleClass="form-control form-control-lg flat-input"
-								value="#{loginController.usuario.email}" />
+								value="#{loginController.usuario.email}"/>
 						</div>
 						<div class="col-md-12">
 							<h:outputLabel style="margin-bottom:0;" value="Senha:" styleClass="wdi-red"/>
@@ -39,8 +39,16 @@
 						<h:commandButton value="Logar"
 							styleClass="btn btn-lg btn-block btn-login"
 							action="#{loginController.logar()}" />
+						
 					</div>
 				</h:form>
+				
+				<h:form>
+					<h:commandLink value="Cadastrar"
+							styleClass="btn btn-lg btn-block"
+							action="usuariocliente.xhtml?faces-redirect=true"/>
+				</h:form>
+					
 			</div>
 		</div>
 	</div>
