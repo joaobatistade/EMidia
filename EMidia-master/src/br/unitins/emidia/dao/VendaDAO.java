@@ -10,6 +10,8 @@ import java.util.List;
 
 import br.unitins.emidia.application.Util;
 import br.unitins.emidia.model.ItemVenda;
+import br.unitins.emidia.model.Produto;
+import br.unitins.emidia.model.Usuario;
 import br.unitins.emidia.model.Venda;
 
 
@@ -136,69 +138,129 @@ public class VendaDAO implements DAO<Venda> {
 
 	@Override
 	public List<Venda> obterTodos() throws Exception {
-		
 		return null;
-//		Exception exception = null;
-//		Connection conn = DAO.getConnection();
-//		List<Venda> listavenda = new ArrayList<Venda>();
-//
-//		StringBuffer sql = new StringBuffer();
-//		sql.append("SELECT ");
-//		sql.append("  m.id, ");
-//		sql.append("  m.nome, ");
-//		sql.append("  m.descricao, ");
-//		sql.append("  m.preco, ");
-//		sql.append("  m.estoque, ");
-//		sql.append("  m.tipo_venda ");
-//		sql.append("FROM  ");
-//		sql.append("  venda m ");
-//		sql.append("ORDER BY m.nome ");
-//
-//		PreparedStatement stat = null;
-//		try {
-//
-//			stat = conn.prepareStatement(sql.toString());
-//
-//			ResultSet rs = stat.executeQuery();
-//
-//			while (rs.next()) {
-//				Venda venda = new Venda();
-//				venda.setId(rs.getInt("id"));
-//				venda.setNome(rs.getString("nome"));
-//				venda.setDescricao(rs.getString("descricao"));
-//				venda.setPreco(rs.getDouble("preco"));
-//				venda.setEstoque(rs.getInt("estoque"));
-//				venda.setTipovenda(Tipovenda.valueOf(rs.getInt("tipo_venda")));
-//
-//				listavenda.add(venda);
-//			}
-//
-//		} catch (SQLException e) {
-//			Util.addErrorMessage("Não foi possivel buscar os dados do venda.");
-//			e.printStackTrace();
-//			exception = new Exception("Erro ao executar um sql em vendaDAO.");
-//		} finally {
-//			try {
-//				if (!stat.isClosed())
-//					stat.close();
-//			} catch (SQLException e) {
-//				System.out.println("Erro ao fechar o Statement");
-//				e.printStackTrace();
-//			}
-//
-//			try {
-//				if (!conn.isClosed())
-//					conn.close();
-//			} catch (SQLException e) {
-//				System.out.println("Erro a o fechar a conexao com o banco.");
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		if (exception != null)
-//			throw exception;
-//
-//		return listavenda;
+	}
+	
+	private List<ItemVenda> obterTodosItemVenda(Venda venda) throws Exception{
+		Exception exception = null;
+		Connection conn = DAO.getConnection();
+		List<ItemVenda> listaItemVenda = new ArrayList<ItemVenda>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append("  i.id, ");
+		sql.append("  i.preco, ");
+		sql.append("  i.id_produto ");
+		sql.append("FROM  ");
+		sql.append("  item_venda i ");
+		sql.append(" WHERE ");
+		sql.append("  i.id_venda = ? ");
+
+		PreparedStatement stat = null;
+		try {
+
+			stat = conn.prepareStatement(sql.toString());
+			stat.setInt(1, venda.getId());
+			
+			ResultSet rs = stat.executeQuery();
+
+			while (rs.next()) {
+				ItemVenda itemVenda = new ItemVenda();
+				itemVenda.setId(rs.getInt("id"));
+				itemVenda.setPreco(rs.getDouble("preco"));
+				ProdutoDAO dao = new ProdutoDAO();
+				itemVenda.setProduto(dao.obterUm(new Produto(rs.getInt("id_produto"))));
+				
+				listaItemVenda.add(itemVenda);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			exception = new Exception("Erro ao executar um sql em Item de venda.");
+		} finally {
+			try {
+				if (!stat.isClosed())
+					stat.close();
+			} catch (SQLException e) {
+				System.out.println("Erro ao fechar o Statement");
+				e.printStackTrace();
+			}
+
+			try {
+				if (!conn.isClosed())
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println("Erro a o fechar a conexao com o banco.");
+				e.printStackTrace();
+			}
+		}
+
+		if (exception != null)
+			throw exception;
+
+		return listaItemVenda;
+	}
+	
+	public List<Venda> obterTodos(Usuario usuario) throws Exception {
+		
+		Exception exception = null;
+		Connection conn = DAO.getConnection();
+		List<Venda> listavenda = new ArrayList<Venda>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append("  v.id, ");
+		sql.append("  v.data_vendida, ");
+		sql.append("  v.id_usuario ");
+		sql.append("FROM  ");
+		sql.append("  venda v ");
+		sql.append(" WHERE ");
+		sql.append("  v.id_usuario = ? ");
+
+		PreparedStatement stat = null;
+		try {
+
+			stat = conn.prepareStatement(sql.toString());
+			stat.setInt(1, usuario.getId());
+			
+			ResultSet rs = stat.executeQuery();
+
+			while (rs.next()) {
+				Venda venda = new Venda();
+				venda.setId(rs.getInt("id"));
+				venda.setData(rs.getTimestamp("data_vendida").toLocalDateTime());
+				venda.setUsuario(usuario);
+				venda.setListaItemVenda(obterTodosItemVenda(venda));
+				
+				listavenda.add(venda);
+			}
+
+		} catch (SQLException e) {
+			Util.addErrorMessage("Não foi possivel buscar os dados do venda.");
+			e.printStackTrace();
+			exception = new Exception("Erro ao executar um sql em vendaDAO.");
+		} finally {
+			try {
+				if (!stat.isClosed())
+					stat.close();
+			} catch (SQLException e) {
+				System.out.println("Erro ao fechar o Statement");
+				e.printStackTrace();
+			}
+
+			try {
+				if (!conn.isClosed())
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println("Erro a o fechar a conexao com o banco.");
+				e.printStackTrace();
+			}
+		}
+
+		if (exception != null)
+			throw exception;
+
+		return listavenda;
 	}
 
 	@Override

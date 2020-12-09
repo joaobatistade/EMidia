@@ -1,13 +1,31 @@
 package br.unitins.emidia.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class Produto {
 
 	private Integer id;
+	
+	@Size(min = 3, max = 60, message = "O nome deve conter no mínimo 3 dígitos e maximo 60.")
+	@NotBlank(message = "O nome deve ser preenchido.")
 	private String nome;
+	
+	@Size(min = 3, max = 60, message = "A descrição deve conter no máximo 600 caracteres.")
 	private String descricao;
+	
 	private Double preco;
 	private Integer estoque;
 	private TipoProduto tipoProduto;
+	
+	public Produto() {
+		 // default
+	}
+
+	public Produto(Integer id) {
+		super();
+		this.id = id;
+	}
 
 	public Integer getId() {
 		return id;

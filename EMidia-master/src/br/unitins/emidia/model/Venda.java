@@ -8,6 +8,11 @@ public class Venda {
 	private LocalDateTime data;
 	private Usuario usuario;
 	private List<ItemVenda> listaItemVenda;
+	
+	// Terminar método calculado
+	public Double getTotalVenda() {
+		return 0.0;
+	}
 
 	public Integer getId() {
 		return id;
