@@ -5,8 +5,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 <ui:composition template="/template.xhtml">
 <ui:define name="conteudo">
-
-	<h1 align="center">Cadastro de Usuário</h1>
 	
 		<h:messages 
 			errorStyle="color:red"
@@ -19,6 +17,17 @@
 	<div class="container-fluid">
 		<div class="row justify-content-md-center">
 			<div class="col-md-6 col-md-auto login-box">
+				<div class="form-row">
+					    <div class="form-group col-md-2">
+					    	<h:form>
+						    	<h:commandLink value="voltar"
+									action="consultausuario.xhtml?faces-redirect=true" />
+							</h:form>
+					    </div>	
+						<div class="form-group col-md-10">
+							<h1 class="text-center wdi-red">Cadastro de Usuário</h1>
+						</div>
+					</div> 
 				<h:form>
 				
 					<div class="form-group">
@@ -124,54 +133,7 @@
 			</div>
 		</div>
 	</div>
-	
-	<h:form id="formDataTable">		
-		<h:dataTable style="" value="#{usuarioController.listaEntity}" var="obj">
-			<h:column>
-				<f:facet name="header">Id</f:facet>		
-				<h:outputLabel value="#{obj.id}"/>	
-			</h:column>
-			
-			<h:column>
-				<f:facet name="header">Nome</f:facet>	
-				<h:commandLink value="#{obj.nome}" 
-						actionListener="#{usuarioController.editar(obj)}"/>
-			</h:column>
-			
-			<h:column>
-				<f:facet name="header">Data Nascimento</f:facet>		
-				<h:outputLabel value="#{obj.dataNascimento}">
-					<f:convertDateTime type="localDate" pattern="dd-MM-yyyy" />
-				</h:outputLabel>	
-			</h:column>	
-			
-			<h:column>
-				<f:facet name="header">Sexo</f:facet>		
-				<h:outputLabel value="#{obj.sexo.label}"/>	
-			</h:column>
-			
-			<h:column>
-				<f:facet name="header">Perfil</f:facet>		
-				<h:outputLabel value="#{obj.perfil.label}"/>	
-			</h:column>			
-			
-			<h:column>
-				<f:facet name="header">E-mail</f:facet>		
-				<h:outputLabel value="#{obj.email}"/>	
-			</h:column>
-			
-			<h:column>
-				<f:facet name="header">Senha</f:facet>		
-				<h:outputLabel value="#{obj.senha}"/>	
-			</h:column>		
-			
-			<h:column>
-				<f:facet name="header">Ação</f:facet>		
-				<h:commandLink value="Apagar" actionListener="#{usuarioController.excluir(obj)}"/>	
-			</h:column>								
 		
-		</h:dataTable>
-	</h:form>	
 </ui:define>
 </ui:composition>
 </html>

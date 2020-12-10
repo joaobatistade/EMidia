@@ -11,7 +11,7 @@
 	<h1>Menu</h1>
 	<h:form>
 		<h:commandLink value="Login" action="/faces/login.xhtml?faces-redirect=true" styleClass="button"/> <br/>
-		<h:commandLink value="Cadastro de Produto" action="/faces/adm/consultaProduto.xhtml?faces-redirect=true" styleClass="button"/> <br/>
+		<h:commandLink value="Cadastro de Usuário" action="/faces/adm/consultaProduto.xhtml?faces-redirect=true" styleClass="button"/> <br/>
 	</h:form>
 
 </ui:define>
@@ -38,7 +38,7 @@
 				    	<h:form>
 					    	<h:commandButton value="Cadastrar Usuário"
 						     	class="btn btn-success"
-						     	actionListener="#{consultaProdutoController.novoProduto}" />
+						     	actionListener="#{consultaUsuarioController.novoUsuario}" />
 						</h:form>
 				    </div>
 				</div>		
@@ -49,29 +49,34 @@
 					 	<div class="form-group col-md-4">
 					 		
 					      	<h:selectOneMenu styleClass="form-control" 
-								value="#{consultaProdutoController.tipoFiltro}">
+								value="#{consultaUsuarioController.filtro}">
 							   <f:selectItem itemValue="1" itemLabel="Nome" />
-							   <f:selectItem itemValue="2" itemLabel="Descrição" />                   
+							   <f:selectItem itemValue="2" itemLabel="CPF" />                   
 							</h:selectOneMenu>
 					    </div>
 					    <div class="form-group col-md-6">
 					     	<input type="text" class="form-control" 
 					     		placeholder="Informe o filtro ..."
-								jsf:value="#{consultaProdutoController.filtro}" />
+								jsf:value="#{consultaUsuarioController.filtro}" />
 					    	
 					    </div>
 					    
 					    <div class="form-group col-md-2">
 					      <h:commandButton value="Pesquisar"
 					     		class="btn btn-primary"
-								actionListener="#{consultaProdutoController.pesquisar}" />
+								actionListener="#{consultaUsuarioController.pesquisar}" />
 					    </div>
 					    
 						
 					</div>
 				</h:form>
-					<h:form id="formDataTable">
-						<h:dataTable style="" value="#{usuarioController.listaEntity}" var="obj">
+				
+				<h:form id="formDataTable">
+							<h:dataTable id="dataTable" 
+										class="table table-striped table-hover"
+										value="#{consultaUsuarioController.listaUsuario}" 
+									 	var="obj">
+									 								
 							<h:column>
 								<f:facet name="header">Id</f:facet>		
 								<h:outputLabel value="#{obj.id}"/>	
@@ -112,7 +117,7 @@
 							
 							<h:column>
 								<f:facet name="header">Ação</f:facet>		
-								<h:commandLink value="Apagar" actionListener="#{usuarioController.excluir(obj)}"/>	
+								<h:commandLink value="Apagar" actionListener="#{clienteController.excluir(obj)}"/>	
 							</h:column>								
 						
 						</h:dataTable>

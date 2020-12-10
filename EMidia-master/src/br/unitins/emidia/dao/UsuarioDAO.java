@@ -10,7 +10,9 @@ import java.util.List;
 
 import br.unitins.emidia.application.Util;
 import br.unitins.emidia.model.Perfil;
+import br.unitins.emidia.model.Produto;
 import br.unitins.emidia.model.Sexo;
+import br.unitins.emidia.model.TipoProduto;
 import br.unitins.emidia.model.Usuario;
 
 public class UsuarioDAO implements DAO<Usuario> {
@@ -420,6 +422,81 @@ public class UsuarioDAO implements DAO<Usuario> {
 			throw exception;
 
 		return usuario;
+	}
+	
+	public List<Usuario> obterListaUsuario(Integer tipo, String filtro) throws Exception {
+		Exception exception = null;
+		Connection conn = DAO.getConnection();
+		List<Usuario> listausuario = new ArrayList<Usuario>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append("  u.id, ");
+		sql.append("  u.data_nascimento, ");
+		sql.append("  u.sexo, ");
+		sql.append("  u.perfil, ");
+		sql.append("  u.nome, ");
+		sql.append("  u.cpf, ");
+		sql.append("  u.email ");
+		sql.append("FROM  ");
+		sql.append("  usuario u ");
+		sql.append("  WHERE ");
+		sql.append("  upper(u.nome) LIKE upper( ? ) ");
+		sql.append("  AND upper(u.cpf) LIKE upper( ? ) ");
+		sql.append("ORDER BY u.nome ");
+
+		PreparedStatement stat = null;
+		try {
+
+			stat = conn.prepareStatement(sql.toString());
+			stat.setString(1, tipo == 1 ? "%" + filtro + "%" : "%");
+			stat.setString(2, tipo == 2 ? "%" + filtro + "%" : "%");
+
+			ResultSet rs = stat.executeQuery();
+
+			while (rs.next()) {
+				
+				Usuario usuario = new Usuario();
+				usuario.setId(rs.getInt("id"));
+				Date data = rs.getDate("data_nascimento");
+				usuario.setDataNascimento(data == null ? null : data.toLocalDate());
+				usuario.setSexo(Sexo.valueOf(rs.getInt("sexo")));
+				usuario.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
+				usuario.setNome(rs.getString("nome"));
+				usuario.setCpf(rs.getString("cpf"));
+				usuario.setEmail(rs.getString("email"));
+				usuario.setSenha(rs.getString("senha"));
+				
+
+				listausuario.add(usuario);
+			}
+
+		} catch (SQLException e) {
+			Util.addErrorMessage("Não foi possivel buscar os dados do produto.");
+			e.printStackTrace();
+			exception = new Exception("Erro ao executar um sql em produtoDAO.");
+		} finally {
+			try {
+				if (!stat.isClosed())
+					stat.close();
+			} catch (SQLException e) {
+				System.out.println("Erro ao fechar o Statement");
+				e.printStackTrace();
+			}
+
+			try {
+				if (!conn.isClosed())
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println("Erro a o fechar a conexao com o banco.");
+				e.printStackTrace();
+			}
+		}
+
+		if (exception != null)
+			throw exception;
+
+		return listausuario;
 	}
 
 

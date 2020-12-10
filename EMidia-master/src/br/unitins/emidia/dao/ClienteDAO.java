@@ -94,11 +94,11 @@ public class ClienteDAO implements DAO<Cliente> {
 		sql.append("UPDATE cliente SET ");
 		sql.append("  nome = ?, ");
 		sql.append("  cpf = ?, ");
+		sql.append("  data_nascimento = ? ");
 		sql.append("  email = ?, ");
 		sql.append("  senha = ?, ");
 		sql.append("  sexo = ?, ");
-		sql.append("  perfil = ?, ");
-		sql.append("  data_nascimento = ? ");
+		sql.append("  perfil = ? ");
 		sql.append("WHERE ");
 		sql.append("  id = ? ");
 
@@ -108,13 +108,14 @@ public class ClienteDAO implements DAO<Cliente> {
 			stat = conn.prepareStatement(sql.toString());
 			stat.setString(1, obj.getNome());
 			stat.setString(2, obj.getCpf());
-			stat.setString(3, obj.getEmail());
-			stat.setString(4, obj.getSenha());
-			// ternario java
-			stat.setObject(5, (obj.getSexo() == null ? null : obj.getSexo().getId()));
-			stat.setObject(6, (obj.getPerfil() == null ? null : obj.getPerfil().getId()));
 			// convertendo um obj LocalDate para sql.Date
-			stat.setDate(7, obj.getDataNascimento() == null ? null : Date.valueOf(obj.getDataNascimento()));
+			stat.setDate(3, obj.getDataNascimento() == null ? null : Date.valueOf(obj.getDataNascimento()));
+			stat.setString(4, obj.getEmail());
+			stat.setString(5, obj.getSenha());
+			// ternario java
+			stat.setObject(6, (obj.getSexo() == null ? null : obj.getSexo().getId()));
+			stat.setObject(7, (obj.getPerfil() == null ? null : obj.getPerfil().getId()));
+			
 			stat.setInt(8, obj.getId());
 
 			stat.execute();

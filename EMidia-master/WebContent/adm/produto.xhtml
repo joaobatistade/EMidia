@@ -81,7 +81,7 @@
 							    <h:commandButton value="Excluir" style="width:100px"
 									class="btn btn-outline-danger"
 									disabled="#{produtoController.entity.id == null}"
-									actionListener="#{produtoController.remover}" >
+									actionListener="#{produtoController.excluir}" >
 									<f:ajax execute="@this" render="@form formDataTable"/>
 								</h:commandButton>
 						    </div>
