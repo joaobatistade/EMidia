@@ -1,7 +1,10 @@
 package br.unitins.emidia.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import br.unitins.emidia.application.Session;
 
 public class Venda {
 	private Integer id;
@@ -10,9 +13,24 @@ public class Venda {
 	private List<ItemVenda> listaItemVenda;
 	
 	// Terminar método calculado
-	public Double getTotalVenda() {
-		return 0.0;
-	}
+//	public Double getTotalVenda() {
+//		
+//		List<ItemVenda> carrinho = (ArrayList<ItemVenda>)  Session.getInstance().getAttribute("carrinho");
+//		
+//		Double valorTotal = 0.0;
+//		
+//		for (ItemVenda item : carrinho) {
+//			
+//			if(item.getPreco() != null) {
+//				
+//				valorTotal += item.getPreco();
+//				
+//			}
+//			
+//		}
+//		
+//		return valorTotal;
+//	}
 
 	public Integer getId() {
 		return id;

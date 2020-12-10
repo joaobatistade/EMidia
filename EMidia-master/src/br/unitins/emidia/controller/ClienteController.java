@@ -2,6 +2,8 @@ package br.unitins.emidia.controller;
 
 import java.io.Serializable;
 
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -18,8 +20,11 @@ public class ClienteController extends Controller<Cliente> implements Serializab
 	
 	public ClienteController() {
 		super(new ClienteDAO());
+		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		flash.keep("clienteFlash");
+		setEntity((Cliente)flash.get("clienteFlash"));
 	}
-
+	
 	@Override
 	public Cliente getEntity() {
 		if (entity == null)

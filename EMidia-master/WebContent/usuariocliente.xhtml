@@ -102,9 +102,28 @@
 						    <div class="form-group col-md-3">
 								<h:commandButton value="Cadastrar" style="width:100px"
 									class="btn btn-outline-primary"
+									disabled="#{usuarioController.entity.id != null}"
 									actionListener="#{clienteController.incluir}" />    
 						    </div>
-
+						    
+						    <div class="form-group col-md-3">
+						   		 <h:commandButton value="Alterar" style="width:100px"
+						   		 	class="btn btn-outline-primary"
+									actionListener="#{usuarioController.alterar()}" 
+									disabled="#{usuarioController.entity.id == null}">
+									<f:ajax execute="@form" render="@form formDataTable"/>
+								</h:commandButton>	
+							</div>
+							
+							<div class="form-group col-md-3">
+								<h:commandButton value="Excluir" style="width:100px"
+									class="btn btn-outline-primary"
+									actionListener="#{usuarioController.excluir()}" 
+									disabled="#{usuarioController.entity.id == null}">
+									<f:ajax execute="@this" render="@form formDataTable"/>
+								</h:commandButton>
+							</div>
+							
 						    <div class="form-group col-md-3">
 						    	<h:commandButton value="Limpar" style="width:100px"
 									class="btn btn-outline-primary"

@@ -22,9 +22,24 @@ public class CarrinhoController implements Serializable{
 	
 	private Venda venda;
 	
-	public void remover(ItemVenda itemVenda) {
-		// Terminar
-	}
+
+	// Terminar
+//	public void remover(ItemVenda item) {
+//		
+//		List<ItemVenda> carrinho = (ArrayList<ItemVenda>)  Session.getInstance().getAttribute("carrinho");
+//		
+//		for (ItemVenda itemVenda : carrinho) {
+//			
+//			if (itemVenda.equals(item)) {
+//				
+//				carrinho.remove(itemVenda);
+//				
+//				Session.getInstance().setAttribute("carrinho", null);
+//				Session.getInstance().setAttribute("carrinho", item);
+//				
+//			}
+//		}
+//	}
 	
 	public void finalizar() {
 		// obtendo o usuario da sessão
