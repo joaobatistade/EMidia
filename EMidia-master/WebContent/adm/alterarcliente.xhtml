@@ -4,12 +4,21 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 <ui:composition template="/template.xhtml">
+<ui:define name="menu">
+	<h1>Menu</h1>
+	<h:form>
+		<h:commandLink value="Login" action="/faces/login.xhtml?faces-redirect=true" styleClass="button"/> <br/>
+		<h:commandLink value="Cadastro de Cliente" action="/faces/adm/consultaProduto.xhtml?faces-redirect=true" styleClass="button"/> <br/>
+	</h:form>
+
+</ui:define>
 	<ui:define name="conteudo">
 
 		<!-- mensagem
 			<h:messages errorStyle="color:red" warnStyle="color:orange"
 				infoStyle="color:green" globalOnly="false" />
 		-->
+	
 	
 	<h:form id="formDataTable">		
 		<h:dataTable style="" value="#{clienteController.listaEntity}" var="obj">

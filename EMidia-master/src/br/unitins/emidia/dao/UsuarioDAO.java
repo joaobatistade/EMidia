@@ -432,12 +432,12 @@ public class UsuarioDAO implements DAO<Usuario> {
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
 		sql.append("  u.id, ");
-		sql.append("  u.data_nascimento, ");
-		sql.append("  u.sexo, ");
-		sql.append("  u.perfil, ");
 		sql.append("  u.nome, ");
 		sql.append("  u.cpf, ");
-		sql.append("  u.email ");
+		sql.append("  u.email, ");
+		sql.append("  u.data_nascimento, ");
+		sql.append("  u.sexo, ");
+		sql.append("  u.perfil ");		
 		sql.append("FROM  ");
 		sql.append("  usuario u ");
 		sql.append("  WHERE ");
@@ -458,15 +458,13 @@ public class UsuarioDAO implements DAO<Usuario> {
 				
 				Usuario usuario = new Usuario();
 				usuario.setId(rs.getInt("id"));
+				usuario.setNome(rs.getString("nome"));
+				usuario.setCpf(rs.getString("cpf"));
+				usuario.setEmail(rs.getString("email"));
 				Date data = rs.getDate("data_nascimento");
 				usuario.setDataNascimento(data == null ? null : data.toLocalDate());
 				usuario.setSexo(Sexo.valueOf(rs.getInt("sexo")));
 				usuario.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
-				usuario.setNome(rs.getString("nome"));
-				usuario.setCpf(rs.getString("cpf"));
-				usuario.setEmail(rs.getString("email"));
-				usuario.setSenha(rs.getString("senha"));
-				
 
 				listausuario.add(usuario);
 			}

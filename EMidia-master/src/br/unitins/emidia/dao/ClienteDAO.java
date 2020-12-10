@@ -39,6 +39,7 @@ public class ClienteDAO implements DAO<Cliente> {
 				stat.setDate(3, Date.valueOf(obj.getDataNascimento()));
 			else
 				stat.setDate(3, null);
+			
 			stat.setString(4, obj.getEmail());
 			stat.setString(5, obj.getSenha());
 			// ternario java
@@ -218,19 +219,18 @@ public class ClienteDAO implements DAO<Cliente> {
 		List<Cliente> listaCliente = new ArrayList<Cliente>();
 
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT ");
-//		sql.append("  u.* ");
-		sql.append("  u.id, ");
-		sql.append("  u.data_nascimento, ");
-		sql.append("  u.sexo, ");
-		sql.append("  u.perfil, ");
-		sql.append("  u.nome, ");
-		sql.append("  u.cpf, ");
-		sql.append("  u.email, ");
-		sql.append("  u.senha ");
+		sql.append(" SELECT ");
+		sql.append("  c.id, ");
+		sql.append("  c.nome, ");
+		sql.append("  c.cpf, ");
+		sql.append("  c.data_nascimentO, ");
+		sql.append("  c.email, ");
+		sql.append("  c.senha, ");
+		sql.append("  c.sexo, ");
+		sql.append("  c.perfil ");
 		sql.append("FROM  ");
-		sql.append("  cliente u ");
-		sql.append("ORDER BY u.nome ");
+		sql.append("  cliente c ");
+		sql.append("ORDER BY c.nome ");
 
 		PreparedStatement stat = null;
 		try {
@@ -242,14 +242,14 @@ public class ClienteDAO implements DAO<Cliente> {
 			while (rs.next()) {
 				Cliente cliente = new Cliente();
 				cliente.setId(rs.getInt("id"));
-				Date data = rs.getDate("data_nascimento");
-				cliente.setDataNascimento(data == null ? null : data.toLocalDate());
-				cliente.setSexo(Sexo.valueOf(rs.getInt("sexo")));
-				cliente.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
 				cliente.setNome(rs.getString("nome"));
 				cliente.setCpf(rs.getString("cpf"));
+				Date data = rs.getDate("data_nascimento");
+				cliente.setDataNascimento(data == null ? null : data.toLocalDate());
 				cliente.setEmail(rs.getString("email"));
 				cliente.setSenha(rs.getString("senha"));
+				cliente.setSexo(Sexo.valueOf(rs.getInt("sexo")));
+				cliente.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
 
 				listaCliente.add(cliente);
 			}
@@ -299,8 +299,8 @@ public class ClienteDAO implements DAO<Cliente> {
 		sql.append("	c.sexo, ");
 		sql.append("	c.perfil ");
 		sql.append(" FROM  ");
-		sql.append("  cliente u ");
-		sql.append("WHERE u.id = ? ");
+		sql.append("  cliente c ");
+		sql.append("WHERE c.id = ? ");
 		
 
 		PreparedStatement stat = null;
@@ -360,20 +360,19 @@ public class ClienteDAO implements DAO<Cliente> {
 		Cliente cliente = null;
 
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT ");
-		sql.append("  u.id, ");
-		sql.append("  u.data_nascimento, ");
-		sql.append("  u.sexo, ");
-		sql.append("  u.perfil, ");
-		sql.append("  u.nome, ");
-		sql.append("  u.cpf, ");
-		sql.append("  u.email, ");
-		sql.append("  u.senha ");
-		sql.append("FROM  ");
-		sql.append("  cliente u ");
+		sql.append(" SELECT ");
+		sql.append("	c.nome, ");
+		sql.append("	c.cpf, ");
+		sql.append("	c.data_nascimento, ");
+		sql.append("	c.email, ");
+		sql.append("	c.senha, ");
+		sql.append("	c.sexo, ");
+		sql.append("	c.perfil ");
+		sql.append(" FROM  ");
+		sql.append("  cliente c ");
 		sql.append("WHERE ");
-		sql.append("  u.email = ? ");
-		sql.append("  AND u.senha = ? ");
+		sql.append("  c.email = ? ");
+		sql.append("  AND c.senha = ? ");
 
 		PreparedStatement stat = null;
 		try {
@@ -387,14 +386,14 @@ public class ClienteDAO implements DAO<Cliente> {
 			if (rs.next()) {
 				cliente = new Cliente();
 				cliente.setId(rs.getInt("id"));
-				Date data = rs.getDate("data_nascimento");
-				cliente.setDataNascimento(data == null ? null : data.toLocalDate());
-				cliente.setSexo(Sexo.valueOf(rs.getInt("sexo")));
-				cliente.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
 				cliente.setNome(rs.getString("nome"));
 				cliente.setCpf(rs.getString("cpf"));
+				Date data = rs.getDate("data_nascimento");
+				cliente.setDataNascimento(data == null ? null : data.toLocalDate());
 				cliente.setEmail(rs.getString("email"));
 				cliente.setSenha(rs.getString("senha"));
+				cliente.setSexo(Sexo.valueOf(rs.getInt("sexo")));
+				cliente.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
 			}
 
 		} catch (SQLException e) {
@@ -424,6 +423,79 @@ public class ClienteDAO implements DAO<Cliente> {
 
 		return cliente;
 	}
+	
+	public List<Cliente> obterListaCliente(Integer tipo, String filtro) throws Exception {
+		Exception exception = null;
+		Connection conn = DAO.getConnection();
+		List<Cliente> listacliente = new ArrayList<Cliente>();
 
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT ");
+		sql.append("	c.nome, ");
+		sql.append("	c.cpf, ");
+		sql.append("	c.data_nascimento, ");
+		sql.append("	c.email, ");
+		sql.append("	c.senha, ");
+		sql.append("	c.sexo, ");
+		sql.append("	c.perfil ");
+		sql.append(" FROM  ");
+		sql.append("  cliente c ");
+		sql.append(" WHERE ");
+		sql.append("  upper(c.nome) LIKE upper( ? ) ");
+		sql.append("  AND upper(c.cpf) LIKE upper( ? ) ");
+		sql.append("ORDER BY c.nome ");
+
+		PreparedStatement stat = null;
+		try {
+
+			stat = conn.prepareStatement(sql.toString());
+			stat.setString(1, tipo == 1 ? "%" + filtro + "%" : "%");
+			stat.setString(2, tipo == 2 ? "%" + filtro + "%" : "%");
+
+			ResultSet rs = stat.executeQuery();
+
+			while (rs.next()) {
+				Cliente cliente = new Cliente();
+				cliente.setId(rs.getInt("id"));
+				cliente.setNome(rs.getString("nome"));
+				cliente.setCpf(rs.getString("cpf"));
+				Date data = rs.getDate("data_nascimento");
+				cliente.setDataNascimento(data == null ? null : data.toLocalDate());
+				cliente.setEmail(rs.getString("email"));
+				cliente.setSenha(rs.getString("senha"));
+				cliente.setSexo(Sexo.valueOf(rs.getInt("sexo")));
+				cliente.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
+				
+
+				listacliente.add(cliente);
+			}
+
+		} catch (SQLException e) {
+			Util.addErrorMessage("Não foi possivel buscar os dados do cliente.");
+			e.printStackTrace();
+			exception = new Exception("Erro ao executar um sql em clienteDAO.");
+		} finally {
+			try {
+				if (!stat.isClosed())
+					stat.close();
+			} catch (SQLException e) {
+				System.out.println("Erro ao fechar o Statement");
+				e.printStackTrace();
+			}
+
+			try {
+				if (!conn.isClosed())
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println("Erro a o fechar a conexao com o banco.");
+				e.printStackTrace();
+			}
+		}
+
+		if (exception != null)
+			throw exception;
+
+		return listacliente;
+	}
 
 }
