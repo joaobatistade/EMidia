@@ -13,8 +13,10 @@ public class Venda {
 	private List<ItemVenda> listaItemVenda;
 	
 	// Terminar método calculado
-//	public Double getTotalVenda() {
-//		
+	public Double getTotalVenda() {
+		
+		return 0.0;
+		
 //		List<ItemVenda> carrinho = (ArrayList<ItemVenda>)  Session.getInstance().getAttribute("carrinho");
 //		
 //		Double valorTotal = 0.0;
@@ -30,7 +32,7 @@ public class Venda {
 //		}
 //		
 //		return valorTotal;
-//	}
+	}
 
 	public Integer getId() {
 		return id;
